@@ -77,7 +77,9 @@ local function set_mapping(user_opts)
   -- if user_opts.cap.document_formatting then
   if doc_fmt then
     buf_set_keymap("n", "<space>ff", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-    vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()]])
+    if _NgConfigValues.lsp.format_on_save then
+      vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()]])
+    end
   end
   -- if user_opts.cap.document_range_formatting then
   if range_fmt then
@@ -87,7 +89,8 @@ end
 
 local function set_event_handler(user_opts)
   user_opts = user_opts or {}
-  local file_types = "c,cpp,h,go,python,vim,sh,javascript,html,css,lua,typescript,rust"
+  local file_types =
+      "c,cpp,h,go,python,vim,sh,javascript,html,css,lua,typescript,rust,javascriptreact,typescriptreact,json,yaml,kotlin,php,dart,nim,terraform"
   -- local format_files = "c,cpp,h,go,python,vim,javascript,typescript" --html,css,
   vim.api.nvim_command [[augroup nvim_lsp_autos]]
   vim.api.nvim_command [[autocmd!]]
@@ -109,12 +112,11 @@ end
 local M = {}
 
 function M.setup(user_opts)
-  user_opts = user_opts or {}
-  user_opts.cap = vim.lsp.protocol.make_client_capabilities()
 
   set_mapping(user_opts)
   set_event_handler(user_opts)
-  local cap = user_opts.cap or {}
+
+  local cap = user_opts.cap or vim.lsp.protocol.make_client_capabilities()
   if cap.call_hierarchy or cap.callHierarchy then
     vim.lsp.handlers["callHierarchy/incomingCalls"] =
         require"navigator.hierarchy".incoming_calls_handler

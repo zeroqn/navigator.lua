@@ -11,8 +11,14 @@ _NgConfigValues = {
   sumneko_root_path = vim.fn.expand("$HOME") .. "/github/sumneko/lua-language-server",
   sumneko_binary = vim.fn.expand("$HOME") ..
       "/github/sumneko/lua-language-server/bin/macOS/lua-language-server",
-  treesitter_call_tree = true,
-  code_action_prompt = {enable = true, sign = true, sign_priority = 40, virtual_text = true}
+  code_action_prompt = {enable = true, sign = true, sign_priority = 40, virtual_text = true},
+  lsp = {
+    format_on_save = true, -- set to false to disasble lsp code format on save (if you are using prettier/efm/formater etc)
+    tsserver = {
+      filetypes = {'typescript'} -- disable javascript etc,
+      -- set to {} to disable the lspclient for all filetype
+    }
+  }
 }
 
 vim.cmd("command! -nargs=0 LspLog call v:lua.open_lsp_log()")
@@ -26,7 +32,7 @@ local extend_config = function(opts)
       error(string.format("[] Key %s not valid", key))
       return
     end
-    if type(M.config_values[key]) == "table" then
+    if type(_NgConfigValues[key]) == "table" then
       for k, v in pairs(value) do _NgConfigValues[key][k] = v end
     else
       _NgConfigValues[key] = value
