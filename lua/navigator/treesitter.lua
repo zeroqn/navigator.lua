@@ -80,7 +80,7 @@ local function get_scope(type, source)
   local result = current
   local next = ts_utils.get_next_node(source)
   local parent = current:parent()
-  log(source:type(), source:range())
+  trace(source:type(), source:range())
 
   if next == nil or parent == nil then return end
 
@@ -107,7 +107,7 @@ end
 
 local function get_smallest_context(source)
   local scopes = ts_locals.get_scopes()
-  for key, value in pairs(scopes) do log(key, value) end
+  for key, value in pairs(scopes) do trace(key, value) end
   local current = source
   while current ~= nil and not vim.tbl_contains(scopes, current) do current = current:parent() end
   log(current)
@@ -145,7 +145,7 @@ function M.goto_next_usage(bufnr) return M.goto_adjacent_usage(bufnr, 1) end
 function M.goto_previous_usage(bufnr) return M.goto_adjacent_usage(bufnr, -1) end
 
 local function get_all_nodes(bufnr, filter, summary)
-  log(bufnr, filter, summary)
+  trace(bufnr, filter, summary)
   bufnr = bufnr or 0
   summary = summary or false
   if not parsers.has_parser() then print("ts not loaded") end
@@ -209,13 +209,13 @@ local function get_all_nodes(bufnr, filter, summary)
 
       if scope ~= nil then
         -- it is strange..
-        log(item.node_text, item.kind, item.type)
+        trace(item.node_text, item.kind, item.type)
         if not is_func and summary then goto continue end
         item.node_scope = ts_utils.node_to_lsp_range(scope)
       end
       if summary then
         if item.node_scope ~= nil then table.insert(all_nodes, item) end
-        log(item)
+        log(item.kind, item.node_text)
         goto continue
       end
 

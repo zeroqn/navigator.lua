@@ -271,7 +271,6 @@ vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]])
 
 local function setup(user_opts)
   trace(debug.traceback())
-  log(user_opts)
   user_opts = user_opts or _NgConfigValues -- incase setup was triggered from autocmd
 
   if _Loading == true then return end
@@ -289,19 +288,21 @@ local function setup(user_opts)
   }
   for i = 1, #disable_ft do
     if ft == disable_ft[i] then
-      log("navigator disabled for ft", ft)
+      trace("navigator disabled for ft", ft)
       return
     end
   end
+
   local bufnr = vim.fn.bufnr()
   local uri = vim.uri_from_bufnr(bufnr)
 
-  log("loading for ft ", ft, uri)
   if uri == 'file://' or uri == 'file:///' then
     log("skip loading for ft ", ft, uri)
     return
   end
 
+  log('setup', user_opts)
+  log("loading for ft ", ft, uri)
   highlight.diagnositc_config_sign()
   highlight.add_highlight()
   local lsp_opts = user_opts.lsp
