@@ -74,39 +74,36 @@ local function prepare_node(node, kind)
   return matches
 end
 
-local function get_var_context(source)
+local function get_scope(source)
   local sbl, sbc, sel, sec = source:range()
   local current = source
   local result = current
   local next = ts_utils.get_next_node(source)
   local parent = current:parent()
+  log(source:type(), source:range())
 
   if next == nil or parent == nil then return end
-  if next:type() == "function" or next:type() == "arrow_function" then
-    log(current:type(), current:range())
-    return parent
-  else
-    return source
+  if source:type() == "identifier" then
+    if next:type() == "function" or next:type() == "arrow_function" then
+      log(current:type(), current:range())
+      return parent, true
+    else
+      log(source, source:type())
+      return source, false
+    end
   end
-  -- while current ~= nil do
-  --   log(current:type(), current:range())
-  --   if current:type() == "variable_declarator" or current:type() == "function_declaration" then
-  --     return current
-  --   end
-  --   -- local bl, bc, el, ec = current:range()
-  --   -- if bl == sbl and bc == sbc and el >= sel and ec >= sec then result = current end
-  --   current = current:parent()
-  -- end
-  -- log(current)
+
+  if source:type() == "type_identifier" then return source:parent(), true end
+
 end
 
 local function get_smallest_context(source)
   local scopes = ts_locals.get_scopes()
+  for key, value in pairs(scopes) do log(key, value) end
   local current = source
   while current ~= nil and not vim.tbl_contains(scopes, current) do current = current:parent() end
   log(current)
-  if current ~= nil then return current end
-  return get_var_context(source)
+  if current ~= nil then return current, true end
   -- if source:type() == "identifier" then return get_var_context(source) end
 end
 
@@ -186,21 +183,30 @@ local function get_all_nodes(bufnr, filter, summary)
     for _, node in ipairs(nodes) do
       item.kind = node.kind
       item.type = node.type
+
+      if filter ~= nil and not filter[item.type] then goto continue end
       local tsdata = node.def
 
-      log(item.type, tsdata:type())
       if node.def == nil then goto continue end
       item.node_text = ts_utils.get_node_text(tsdata, bufnr)[1]
+      local scope, is_func
 
-      local scope = get_smallest_context(tsdata)
+      log(item.type, tsdata:type(), item.node_text)
+      if summary then
+        scope, is_func = get_scope(tsdata)
+      else
+        scope, is_func = get_smallest_context(tsdata)
+      end
+
       if scope ~= nil then
         -- it is strange..
         log(item.node_text, item.kind, item.type)
+        if not is_func and summary then goto continue end
         item.node_scope = ts_utils.node_to_lsp_range(scope)
       end
-      if filter ~= nil and not filter[item.type] then goto continue end
       if summary then
         if item.node_scope ~= nil then table.insert(all_nodes, item) end
+        log(item)
         goto continue
       end
 
