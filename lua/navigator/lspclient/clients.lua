@@ -230,17 +230,24 @@ local function load_cfg(ft, client, cfg, loaded)
   -- need to verify the lsp server is up
 end
 
-local function wait_lsp_startup(ft, retry)
+local function wait_lsp_startup(ft, retry, lsp_opts)
   retry = retry or false
   local clients = vim.lsp.get_active_clients() or {}
   local loaded = {}
-  for i = 1, 2 do
+  for _ = 1, 2 do
     for _, client in ipairs(clients) do
       if client ~= nil then table.insert(loaded, client.name) end
     end
     for _, lspclient in ipairs(servers) do
+      if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient].filetypes ~= nil then
+        if not vim.tbl_contains(lsp_opts[lspclient].filetypes, ft) then
+          log("ft", ft, "disabled for", lspclient)
+          goto continue
+        end
+      end
       local cfg = setups[lspclient] or default_cfg
       load_cfg(ft, lspclient, cfg, loaded)
+      ::continue::
     end
     if not retry or ft == nil then return end
     --
@@ -264,10 +271,8 @@ vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]])
 
 local function setup(user_opts)
   verbose(debug.traceback())
-  if lspconfig == nil then
-    error("lsp-config need installed and enabled")
-    return
-  end
+  log(user_opts)
+  user_opts = user_opts or _NgConfigValues -- incase setup was triggered from autocmd
 
   if _Loading == true then return end
   local ft = vim.bo.filetype
@@ -299,9 +304,9 @@ local function setup(user_opts)
 
   highlight.diagnositc_config_sign()
   highlight.add_highlight()
-
+  local lsp_opts = user_opts.lsp
   _Loading = true
-  wait_lsp_startup(ft, retry)
+  wait_lsp_startup(ft, retry, lsp_opts)
   _Loading = false
 end
 return {setup = setup, cap = cap}
