@@ -3,7 +3,7 @@ local ListView = require "guihua.listview"
 local TextView = require "guihua.textview"
 local util = require "navigator.util"
 local log = require"navigator.util".log
-local verbose = require"navigator.util".verbose
+local trace = require"navigator.util".trace
 local api = vim.api
 
 function M.new_preview(opts)
@@ -58,7 +58,7 @@ function M._preview_location(opts) -- location, width, pos_x, pos_y
   local syntax = api.nvim_buf_get_option(bufnr, "ft")
   if syntax == nil or #syntax < 1 then syntax = "c" end
 
-  -- verbose(syntax, contents)
+  -- trace(syntax, contents)
   local win_opts = {
     syntax = syntax,
     width = opts.width,
@@ -73,7 +73,7 @@ function M._preview_location(opts) -- location, width, pos_x, pos_y
   -- win_opts.items = contents
   win_opts.hl_line = opts.lnum - display_range.start.line
   if win_opts.hl_line < 0 then win_opts.hl_line = 1 end
-  verbose(opts.lnum, opts.range.start.line, win_opts.hl_line)
+  trace(opts.lnum, opts.range.start.line, win_opts.hl_line)
   local w = M.new_preview(win_opts)
 
   return w
@@ -131,15 +131,15 @@ function M.new_list_view(opts)
         if pos == 0 then pos = 1 end
         local l = data[pos]
         if l.filename ~= nil then
-          verbose("openfile ", l.filename, l.lnum, l.col)
+          trace("openfile ", l.filename, l.lnum, l.col)
           util.open_file_at(l.filename, l.lnum, l.col)
         end
       end,
       on_move = opts.on_move or function(pos)
         if pos == 0 then pos = 1 end
         local l = data[pos]
-        verbose("on move", pos, l)
-        verbose("on move", pos, l.text or l, l.uri, l.filename)
+        trace("on move", pos, l)
+        trace("on move", pos, l.text or l, l.uri, l.filename)
         -- todo fix
         if l.uri == nil then l.uri = "file:///" .. l.filename end
         return M.preview_uri({

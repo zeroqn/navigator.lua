@@ -4,7 +4,7 @@ local gutil = require "guihua.util"
 local lsp = require "vim.lsp"
 local api = vim.api
 local log = require"navigator.util".log
-local verbose = require"navigator.util".verbose
+local trace = require"navigator.util".trace
 local symbol_kind = require"navigator.lspclient.lspkind".symbol_kind
 local cwd = vim.fn.getcwd(0)
 cwd = gutil.add_pec(cwd)
@@ -139,7 +139,7 @@ local function ts_functions(uri)
   end
   ts_nodes[uri] = funcs
   ts_nodes_time[uri] = os.time()
-  verbose(funcs)
+  trace(funcs)
   log(string.format("elapsed time: %.4f\n", os.clock() - x))
   return funcs
 end
@@ -147,11 +147,11 @@ end
 local function find_ts_func_by_range(funcs, range)
   if funcs == nil or range == nil then return nil end
   local result = {}
-  verbose(funcs, range)
+  log(funcs, range)
   for _, value in pairs(funcs) do
     local func_range = value.node_scope
     -- note treesitter is C style
-    if func_range and func_range.start.line + 1 <= range.start.line and func_range['end'].line + 1 >=
+    if func_range and func_range.start.line <= range.start.line and func_range['end'].line >=
         range['end'].line then table.insert(result, value) end
   end
   return result

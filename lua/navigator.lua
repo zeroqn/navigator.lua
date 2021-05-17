@@ -12,6 +12,7 @@ _NgConfigValues = {
   sumneko_binary = vim.fn.expand("$HOME") ..
       "/github/sumneko/lua-language-server/bin/macOS/lua-language-server",
   code_action_prompt = {enable = true, sign = true, sign_priority = 40, virtual_text = true},
+  treesitter_call_tree = true,
   lsp = {
     format_on_save = true, -- set to false to disasble lsp code format on save (if you are using prettier/efm/formater etc)
     tsserver = {

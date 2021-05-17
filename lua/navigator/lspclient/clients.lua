@@ -1,6 +1,6 @@
 -- todo allow config passed in
 local log = require"navigator.util".log
-local verbose = require"navigator.util".verbose
+local trace = require"navigator.util".trace
 
 _Loading = false
 
@@ -219,7 +219,7 @@ local function load_cfg(ft, client, cfg, loaded)
       for _, c in pairs(loaded) do
         if client == c then
           -- loaded
-          verbose(client, "already been loaded for", ft, loaded)
+          trace(client, "already been loaded for", ft, loaded)
           return
         end
       end
@@ -241,7 +241,7 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
     for _, lspclient in ipairs(servers) do
       if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient].filetypes ~= nil then
         if not vim.tbl_contains(lsp_opts[lspclient].filetypes, ft) then
-          log("ft", ft, "disabled for", lspclient)
+          -- log("ft", ft, "disabled for", lspclient)
           goto continue
         end
       end
@@ -258,7 +258,7 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
       i = i + 1
       if i > 5 or #clients > 0 then
         timer:close() -- Always close handles to avoid leaks.
-        verbose("active", #clients, i)
+        trace("active", #clients, i)
         _Loading = false
         return true
       end
@@ -270,7 +270,7 @@ end
 vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]]) -- BufWinEnter BufNewFile,BufRead ?
 
 local function setup(user_opts)
-  verbose(debug.traceback())
+  trace(debug.traceback())
   log(user_opts)
   user_opts = user_opts or _NgConfigValues -- incase setup was triggered from autocmd
 

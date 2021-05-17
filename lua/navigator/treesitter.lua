@@ -13,7 +13,7 @@ local M = {}
 
 local cwd = vim.fn.getcwd(0)
 local log = require"navigator.util".log
-local verbose = require"navigator.util".verbose
+local trace = require"navigator.util".trace
 
 local match_kinds = {
   var = " ", -- "👹", -- Vampaire
@@ -74,7 +74,7 @@ local function prepare_node(node, kind)
   return matches
 end
 
-local function get_scope(source)
+local function get_scope(type, source)
   local sbl, sbc, sel, sec = source:range()
   local current = source
   local result = current
@@ -83,9 +83,17 @@ local function get_scope(source)
   log(source:type(), source:range())
 
   if next == nil or parent == nil then return end
-  if source:type() == "identifier" then
+
+  if type == 'method' or type == 'function' then
+    -- a function name
+    return parent, true
+  end
+
+  if type == "var" then
     if next:type() == "function" or next:type() == "arrow_function" then
       log(current:type(), current:range())
+      return next, true
+    elseif parent:type() == 'function_declaration' then
       return parent, true
     else
       log(source, source:type())
@@ -137,6 +145,7 @@ function M.goto_next_usage(bufnr) return M.goto_adjacent_usage(bufnr, 1) end
 function M.goto_previous_usage(bufnr) return M.goto_adjacent_usage(bufnr, -1) end
 
 local function get_all_nodes(bufnr, filter, summary)
+  log(bufnr, filter, summary)
   bufnr = bufnr or 0
   summary = summary or false
   if not parsers.has_parser() then print("ts not loaded") end
@@ -193,7 +202,7 @@ local function get_all_nodes(bufnr, filter, summary)
 
       log(item.type, tsdata:type(), item.node_text)
       if summary then
-        scope, is_func = get_scope(tsdata)
+        scope, is_func = get_scope(item.type, tsdata)
       else
         scope, is_func = get_smallest_context(tsdata)
       end
@@ -232,7 +241,7 @@ local function get_all_nodes(bufnr, filter, summary)
       ::continue::
     end
   end
-  verbose(all_nodes)
+  trace(all_nodes)
   return all_nodes, length
 end
 
@@ -261,7 +270,7 @@ function M.buf_func(bufnr)
     return false
   end)
 
-  verbose(all_nodes, width)
+  trace(all_nodes, width)
 
   return all_nodes
 
@@ -308,7 +317,7 @@ function M.bufs_ts()
     end
   end
   if #ts_opened > 1 then
-    verbose(ts_opened)
+    trace(ts_opened)
 
     local ft = vim.api.nvim_buf_get_option(0, "ft")
     gui.new_list_view({
