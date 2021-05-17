@@ -10,7 +10,7 @@ local cwd = vim.fn.getcwd(0)
 cwd = gutil.add_pec(cwd)
 ts_nodes = {}
 ts_nodes_time = {}
-local ts_enabled, ts_locals = pcall(require, "nvim-treesitter.locals")
+local ts_enabled, _ = pcall(require, "nvim-treesitter.locals")
 
 local calltree_enabled = require"navigator".config_values().treesitter_call_tree
 
@@ -147,7 +147,7 @@ end
 local function find_ts_func_by_range(funcs, range)
   if funcs == nil or range == nil then return nil end
   local result = {}
-  log(funcs, range)
+  trace(funcs, range)
   for _, value in pairs(funcs) do
     local func_range = value.node_scope
     -- note treesitter is C style
