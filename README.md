@@ -13,8 +13,10 @@ Easy code navigation through LSP and 🌲🏡Treesitter symbols, diagnostic erro
 - Treesitter symbol search. It is handy for large filas (Some of LSP e.g. sumneko_lua, there is a 100kb file size limition?)
 - FZY search with Lua-JIT
 - Better navigation for diagnostic errors, Navigate through all files/buffers that contain errors/warnings
-- Grouping references/implementation/incomming/outgoing based on file names.
+- Grouping references/implementation/incoming/outgoing based on file names.
 - Nerdfont, emoji for LSP and Treesitter kind
+- Optimize display (remove trailing bracket), display the caller of reference, de-duplicate lsp result. Using
+treesitter for file preview highlighter etc
 
 # Why a new plugin
 
@@ -22,6 +24,7 @@ After installed a handful of lsp plugins, I still got ~800 loc for lsp and trees
 to tune the lsp plugins to fit my requirements. Navigator.lua help user setup lspconfig with only a few lines of codes.
 This plugin provides a visual way to manage and navigate through symbols, diagnostic errors, reference etc.
 It also the first plugin, IMO, that allows you to search in all treesitter symbols in the workspace.
+Treesitter also used in multiple place e.g. display caller of a reference
 
 # Similar projects / special mentions:
 
@@ -98,6 +101,8 @@ require.'navigator'.setup({
   -- function(client, bufnr)
   --   -- your on_attach will be called at end of navigator on_attach
   -- end,
+
+  treesitter_call_tree = true, -- treesitter variable context
   sumneko_root_path = vim.fn.expand("$HOME") .. "/github/sumneko/lua-language-server",
   sumneko_binary = vim.fn.expand("$HOME") ..
       "/github/sumneko/lua-language-server/bin/macOS/lua-language-server",
