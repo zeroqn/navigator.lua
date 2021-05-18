@@ -115,7 +115,7 @@ function M.new_list_view(opts)
     if #data > 10 and opts.prompt == nil then prompt = true end
 
     local height = math.min(#data, math.floor(wheight / 2))
-    local offset_y = height + 2 -- style shadow took 2 lines
+    local offset_y = height + 1 -- style shadow took 2 lines
     if prompt then offset_y = offset_y + 1 end
     return ListView:new({
       loc = "top_center",

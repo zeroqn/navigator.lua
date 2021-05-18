@@ -86,6 +86,7 @@ local setups = {
         completeUnimported = true,
         staticcheck = true,
         matcher = "fuzzy",
+        experimentalDiagnosticsDelay = "500ms",
         symbolMatcher = "fuzzy",
         gofumpt = true,
         buildFlags = {"-tags", "integration"}
