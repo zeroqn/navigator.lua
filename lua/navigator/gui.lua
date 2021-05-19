@@ -141,7 +141,7 @@ function M.new_list_view(opts)
     -- style shadow took 1 lines
     if border ~= 'none' then
       if border == 'shadow' then
-        offset_y = offset_y
+        offset_y = offset_y + 1
       else
         offset_y = offset_y + 1 -- single?
       end

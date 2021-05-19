@@ -299,18 +299,31 @@ function M.buf_func(bufnr)
     ["class"] = true,
     ["type"] = true
   }, true)
-  table.sort(all_nodes, function(i, j)
-    if i.range and j.range then
-      if i.range.start.line == j.range.start.line then
-        return i.range['end'].line < j.range['end'].line
-      else
-        return i.range.start.line < j.range.start.line
-      end
+  if #all_nodes > 1 then
+    if all_nodes[0].node_scope then
+      table.sort(all_nodes, function(i, j)
+        if i.node_scope and j.node_scope then
+          if i.node_scope['end'].line == j.node_scope['end'].line then
+            return i.node_scope.start.line > j.node_scope.start.line
+          else
+            return i.node_scope['end'].line < j.node_scope['end'].line
+          end
+        end
+        return false
+      end)
+    else
+      table.sort(all_nodes, function(i, j)
+        if i.range and j.range then
+          if i.range['end'].line == j.range['end'].line then
+            return i.range.start.line > j.range.start.line
+          else
+            return i.range['end'].line < j.range['end'].line
+          end
+        end
+        return false
+      end)
     end
-    return false
-  end)
-
-  trace(all_nodes, width)
+  end
 
   return all_nodes
 

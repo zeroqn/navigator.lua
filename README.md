@@ -1,6 +1,17 @@
 # Navigator
 
-Easy code navigation through LSP and 🌲🏡Treesitter symbols, diagnostic errors.
+- Easy code navigation through LSP and 🌲🏡Treesitter symbols, diagnostic errors.
+
+- Put language server and tree sitter's parser together. Not only for better highlight, but also display symbol context
+and scope when you reading the codes.
+
+Show javascript call tree 🌲 of a variable when closure is used
+
+![call_tree_closure](https://user-images.githubusercontent.com/1681295/118893285-86c6f580-b945-11eb-864c-a1c3df082377.jpg)
+
+
+Struct type references in multiple go ﳑ files
+
 ![lsp_reference_search](https://user-images.githubusercontent.com/1681295/118833309-b1dd2500-b904-11eb-8a39-a5cbdfd397b3.gif)
 
 # Features:
@@ -33,6 +44,7 @@ Treesitter also used in multiple place e.g. display caller of a reference
 - [fuzzy](https://github.com/amirrezaask/fuzzy.nvim)
 - [lspsaga](https://github.com/glepnir/lspsaga.nvim)
 - [fzf-lsp lsp with fzf as gui backend](https://github.com/gfanto/fzf-lsp.nvim)
+- [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 
 # Install
 
@@ -88,7 +100,7 @@ EOF
 Generally speaking, you could remove most part of your lspconfig.lua and use the hooks in navigator.lua. As the
 navigator will bind keys and handler for you. The lsp will be loaded lazily based on filetype.
 
-Additional configration:
+Additional configration example:
 
 ```lua
 
@@ -98,6 +110,7 @@ require.'navigator'.setup({
   width = nil, -- valeu of cols TODO allow float e.g. 0.6
   height = nil,
   on_attach = nil,
+  -- you can put a on_attach of your own here, e.g
   -- function(client, bufnr)
   --   -- your on_attach will be called at end of navigator on_attach
   -- end,
@@ -112,6 +125,11 @@ require.'navigator'.setup({
     tsserver = {
       filetypes = {'typescript'} -- disable javascript etc,
       -- set to {} to disable the lspclient for all filetype
+    },
+    gopls = {   -- gopls setting
+      settings = {
+        gopls = {gofumpt = false} -- disable gofumpt etc,
+      }
     }
   }
 })
