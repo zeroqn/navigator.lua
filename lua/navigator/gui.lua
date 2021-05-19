@@ -95,8 +95,7 @@ function M.preview_uri(opts) -- uri, width, line, col, offset_x, offset_y
   loc.range["end"] = {line = opts.lnum + opts.preview_height}
   opts.location = loc
 
-  log("uri", opts.uri, opts.lnum, opts.location.range.start.line,
-      opts.location.range['end'].line)
+  log("uri", opts.uri, opts.lnum, opts.location.range.start.line, opts.location.range['end'].line)
   return M._preview_location(opts)
 end
 
@@ -113,7 +112,7 @@ function M.new_list_view(opts)
   if config.width ~= nil and config.width > 0.3 and config.width < 0.99 then
     width = math.floor(wwidth * config.width)
   end
-  width = math.min(opts.width, width)
+  width = math.min(opts.width or 120, width)
   local wheight = config.height or math.floor(api.nvim_get_option("lines") * 0.8)
   local prompt = opts.prompt or false
   if opts.rawdata then
@@ -121,6 +120,8 @@ function M.new_list_view(opts)
   else
     data = require"guihua.util".prepare_for_render(items, opts)
   end
+
+  local border = _NgConfigValues.border or 'shadow'
 
   if data and not vim.tbl_isempty(data) then
     -- replace
@@ -134,9 +135,19 @@ function M.new_list_view(opts)
     local pheight = math.min(wheight - lheight, math.floor(wheight / 2))
 
     local r, _ = top_center(lheight, width)
-    local offset_y = r + lheight + 1 -- style shadow took 2 lines
+
+    local offset_y = r + lheight
+    -- style shadow took 1 lines
+    if border ~= 'none' then
+      if border == 'shadow' then
+        offset_y = offset_y + 1
+      else
+        offset_y = offset_y + 1 -- single?
+      end
+    end
+    -- if border is not set, this should be r+lheigh
     if prompt then
-      offset_y = offset_y + 1
+      offset_y = offset_y + 1 -- need to check this out
     end
 
     return ListView:new({
@@ -181,7 +192,7 @@ function M.new_list_view(opts)
           range = l.range,
           offset_x = 0,
           offset_y = offset_y,
-          border = "shadow"
+          border = border
         })
       end
     })

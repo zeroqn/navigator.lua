@@ -186,7 +186,7 @@ Show diagnostic in all buffers
 
 ### Implementation
 
-![implementation](https://github.com/ray-x/files/blob/master/img/navigator/implemention.jpg?raw=true)
+![implementation](https://user-images.githubusercontent.com/1681295/118735346-967e0580-b883-11eb-8c1e-88c5810f7e05.jpg?raw=true)
 
 ### Fzy search in reference
 
@@ -206,7 +206,7 @@ Fill struct with gopls
 ### Treesitter symbol
 
 Treetsitter symbols in all buffers
-![treesitter](https://github.com/ray-x/files/blob/master/img/navigator/treesitter.jpg?raw=true)
+![treesitter](https://user-images.githubusercontent.com/1681295/118734953-cc6eba00-b882-11eb-9db8-0a052630d57e.jpg?raw=true)
 
 ### Signature help
 
