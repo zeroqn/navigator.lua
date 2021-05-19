@@ -1,5 +1,3 @@
-local log = require"navigator.util".log
-
 local M = {}
 _NgConfigValues = {
   debug = false, -- log output not implemented
@@ -14,7 +12,12 @@ _NgConfigValues = {
   sumneko_root_path = vim.fn.expand("$HOME") .. "/github/sumneko/lua-language-server",
   sumneko_binary = vim.fn.expand("$HOME") ..
       "/github/sumneko/lua-language-server/bin/macOS/lua-language-server",
-  code_action_prompt = {enable = true, sign = true, sign_priority = 40, virtual_text = true},
+  code_action_prompt = {
+    enable = true,
+    sign = true,
+    sign_priority = 40,
+    virtual_text = true
+  },
   treesitter_call_tree = true, -- treesitter variable context
   lsp = {
     format_on_save = true, -- set to false to disasble lsp code format on save (if you are using prettier/efm/formater etc)
@@ -34,10 +37,10 @@ local extend_config = function(opts)
     return
   end
   for key, value in pairs(opts) do
-    -- if _NgConfigValues[key] == nil then
-    --   error(string.format("[] Key %s not valid", key))
-    --   return
-    -- end
+    if _NgConfigValues[key] == nil then
+      error(string.format("[] Key %s not valid", key))
+      return
+    end
     if type(_NgConfigValues[key]) == "table" then
       for k, v in pairs(value) do
         _NgConfigValues[key][k] = v
@@ -53,12 +56,9 @@ M.config_values = function()
 end
 
 M.setup = function(cfg)
-  log(debug.traceback())
   extend_config(cfg)
-  log(cfg, _NgConfigValues)
-  print("loading navigator")
-  require('navigator.lspclient.clients').setup(_NgConfigValues)
-  require("navigator.lspclient.mapping").setup(_NgConfigValues)
+  -- print("loading navigator")
+  require("navigator.lspclient").setup(_NgConfigValues)
   require("navigator.reference")
   require("navigator.definition")
   require("navigator.hierarchy")

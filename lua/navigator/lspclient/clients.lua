@@ -268,10 +268,10 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
       if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient] ~= nil then
         ret = vim.tbl_extend("force", cfg, lsp_opts[lspclient])
         log(lsp_opts[lspclient].settings)
-        log(ret.settings)
+        log(ret)
       end
       if lspclient == 'gopls' then
-        log(ret.settings)
+        log(ret)
       end
       load_cfg(ft, lspclient, ret, loaded)
       ::continue::
@@ -295,6 +295,7 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
     end, 200)
   end
 end
+vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]]) -- BufWinEnter BufNewFile,BufRead ?
 
 local function setup(user_opts)
 
