@@ -93,6 +93,9 @@ local function get_scope(type, source)
       -- up one level
       return parent:parent(), true
     end
+    if parent:type() == 'function_name_field' then
+      return parent:parent():parent(), true
+    end
     return parent, true
   end
 
@@ -202,8 +205,7 @@ local function get_all_nodes(bufnr, filter, summary)
       local index = n + 1 - i
       local parent_def = parents[index]
       if ts_utils.is_parent(parent_def.node, def.node) or
-          (containers[parent_def.type] and
-              ts_utils.is_parent(parent_def.node:parent(), def.node)) then
+          (containers[parent_def.type] and ts_utils.is_parent(parent_def.node:parent(), def.node)) then
         break
       else
         parents[index] = nil
@@ -256,8 +258,7 @@ local function get_all_nodes(bufnr, filter, summary)
       if item.node_text == "_" then
         goto continue
       end
-      item.full_text = vim.trim(api.nvim_buf_get_lines(bufnr, start_line_node,
-                                                       start_line_node + 1,
+      item.full_text = vim.trim(api.nvim_buf_get_lines(bufnr, start_line_node, start_line_node + 1,
                                                        false)[1] or "")
       item.uri = uri
       item.name = node.node_text
@@ -271,8 +272,8 @@ local function get_all_nodes(bufnr, filter, summary)
         indent = string.rep("  ", #parents - 1) .. " "
       end
 
-      item.text = string.format(" %s %s%-10s\t %s", item.kind, indent,
-                                item.node_text, item.full_text)
+      item.text = string.format(" %s %s%-10s\t %s", item.kind, indent, item.node_text,
+                                item.full_text)
       if #item.text > length then
         length = #item.text
       end

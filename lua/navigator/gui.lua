@@ -108,11 +108,12 @@ function M.new_list_view(opts)
   local wwidth = api.nvim_get_option("columns")
 
   local loc = "top_center"
-  local width = math.floor(wwidth * 0.7)
+  local width = math.floor(wwidth * 0.75)
   if config.width ~= nil and config.width > 0.3 and config.width < 0.99 then
     width = math.floor(wwidth * config.width)
   end
   width = math.min(opts.width or 120, width)
+  opts.width = width
   local wheight = config.height or math.floor(api.nvim_get_option("lines") * 0.8)
   local prompt = opts.prompt or false
   if opts.rawdata then
@@ -140,7 +141,7 @@ function M.new_list_view(opts)
     -- style shadow took 1 lines
     if border ~= 'none' then
       if border == 'shadow' then
-        offset_y = offset_y + 1
+        offset_y = offset_y
       else
         offset_y = offset_y + 1 -- single?
       end

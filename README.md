@@ -1,8 +1,7 @@
 # Navigator
 
 Easy code navigation through LSP and 🌲🏡Treesitter symbols, diagnostic errors.
-
-![document symbol](https://github.com/ray-x/files/blob/master/img/navigator/doc_symbol.gif?raw=true)
+![lsp_reference_search](https://user-images.githubusercontent.com/1681295/118833309-b1dd2500-b904-11eb-8a39-a5cbdfd397b3.gif)
 
 # Features:
 
@@ -14,6 +13,7 @@ Easy code navigation through LSP and 🌲🏡Treesitter symbols, diagnostic erro
 - FZY search with Lua-JIT
 - Better navigation for diagnostic errors, Navigate through all files/buffers that contain errors/warnings
 - Grouping references/implementation/incoming/outgoing based on file names.
+- Treesitter based variable/function context analysis
 - Nerdfont, emoji for LSP and Treesitter kind
 - Optimize display (remove trailing bracket), display the caller of reference, de-duplicate lsp result. Using
 treesitter for file preview highlighter etc
