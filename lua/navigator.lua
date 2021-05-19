@@ -1,5 +1,3 @@
-local log = require"navigator.util".log
-
 local M = {}
 _NgConfigValues = {
   debug = false, -- log output not implemented
@@ -53,9 +51,10 @@ M.config_values = function()
 end
 
 M.setup = function(cfg)
-  log(debug.traceback())
   extend_config(cfg)
-  log(cfg, _NgConfigValues)
+  -- local log = require"navigator.util".log
+  -- log(debug.traceback())
+  -- log(cfg, _NgConfigValues)
   print("loading navigator")
   require('navigator.lspclient.clients').setup(_NgConfigValues)
   require("navigator.lspclient.mapping").setup(_NgConfigValues)

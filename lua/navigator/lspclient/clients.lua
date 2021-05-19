@@ -211,7 +211,6 @@ local default_cfg = {on_attach = on_attach}
 
 -- check and load based on file type
 local function load_cfg(ft, client, cfg, loaded)
-  -- log("trying", client)
 
   if lspconfig[client] == nil then
     log("not supported by nvim", client)
@@ -245,7 +244,6 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
   retry = retry or false
   local clients = vim.lsp.get_active_clients() or {}
   local loaded = {}
-  -- log(setups.gopls)
   for _ = 1, 2 do
     for _, client in ipairs(clients) do
       if client ~= nil then
@@ -255,20 +253,16 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
     for _, lspclient in ipairs(servers) do
       if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient].filetypes ~= nil then
         if not vim.tbl_contains(lsp_opts[lspclient].filetypes, ft) then
-          -- log("ft", ft, "disabled for", lspclient)
+          trace("ft", ft, "disabled for", lspclient)
           goto continue
         end
       end
       local cfg = setups[lspclient] or default_cfg
-      -- if lspclient == 'gopls' then
-      --   log(cfg)
-      -- end
       -- if user provides override values
-      local ret
-      if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient] ~= nil then
-        ret = vim.tbl_extend("force", cfg, lsp_opts[lspclient])
-        log(lsp_opts[lspclient].settings)
-      end
+      -- if lsp_opts[lspclient] ~= nil and lsp_opts[lspclient] ~= nil then
+      --   local ret = vim.tbl_extend("force", cfg, lsp_opts[lspclient])
+      --   log(lsp_opts[lspclient].settings, cfg, ret)
+      -- end
       load_cfg(ft, lspclient, cfg, loaded)
       ::continue::
     end
