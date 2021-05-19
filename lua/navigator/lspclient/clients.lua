@@ -26,7 +26,7 @@ local highlight = require "navigator.lspclient.highlight"
 local util = lspconfig.util
 local config = require"navigator".config_values()
 
-local cap = vim.lsp.protocol.make_client_capabilities()
+-- local cap = vim.lsp.protocol.make_client_capabilities()
 local on_attach = require("navigator.lspclient.attach").on_attach
 -- gopls["ui.completion.usePlaceholders"] = true
 
@@ -70,7 +70,7 @@ library[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true
 local setups = {
   gopls = {
     on_attach = on_attach,
-    capabilities = cap,
+    -- capabilities = cap,
     filetypes = {"go", "gomod"},
     message_level = vim.lsp.protocol.MessageType.Error,
     cmd = {
@@ -263,6 +263,7 @@ local function wait_lsp_startup(ft, retry, lsp_opts)
       --   local ret = vim.tbl_extend("force", cfg, lsp_opts[lspclient])
       --   log(lsp_opts[lspclient].settings, cfg, ret)
       -- end
+
       load_cfg(ft, lspclient, cfg, loaded)
       ::continue::
     end
@@ -331,6 +332,7 @@ local function setup(user_opts)
   local lsp_opts = user_opts.lsp
   _Loading = true
   wait_lsp_startup(ft, retry, lsp_opts)
+
   _Loading = false
 
   if not _NgConfigValues.loaded then
