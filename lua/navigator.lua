@@ -1,3 +1,5 @@
+local log = require"navigator.util".log
+
 local M = {}
 _NgConfigValues = {
   debug = false, -- log output not implemented
@@ -32,10 +34,10 @@ local extend_config = function(opts)
     return
   end
   for key, value in pairs(opts) do
-    if _NgConfigValues[key] == nil then
-      error(string.format("[] Key %s not valid", key))
-      return
-    end
+    -- if _NgConfigValues[key] == nil then
+    --   error(string.format("[] Key %s not valid", key))
+    --   return
+    -- end
     if type(_NgConfigValues[key]) == "table" then
       for k, v in pairs(value) do
         _NgConfigValues[key][k] = v
@@ -51,9 +53,12 @@ M.config_values = function()
 end
 
 M.setup = function(cfg)
+  log(debug.traceback())
   extend_config(cfg)
-  -- print("loading navigator")
-  require("navigator.lspclient").setup(_NgConfigValues)
+  log(cfg, _NgConfigValues)
+  print("loading navigator")
+  require('navigator.lspclient.clients').setup(_NgConfigValues)
+  require("navigator.lspclient.mapping").setup(_NgConfigValues)
   require("navigator.reference")
   require("navigator.definition")
   require("navigator.hierarchy")
