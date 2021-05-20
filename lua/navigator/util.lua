@@ -41,7 +41,9 @@ end
 local function getDir(path)
   local data = {}
   local len = #path
-  if len <= 1 then return nil end
+  if len <= 1 then
+    return nil
+  end
   local last_index = 1
   for i = 2, len do
     local cur_char = path:sub(i, i)
@@ -60,17 +62,25 @@ function M.get_relative_path(base_path, my_path)
   local base_len = #base_data
   local my_len = #my_data
 
-  if base_len > my_len then return my_path end
+  if base_len > my_len then
+    return my_path
+  end
 
-  if base_data[1] ~= my_data[1] then return my_path end
+  if base_data[1] ~= my_data[1] then
+    return my_path
+  end
 
   local cur = 0
   for i = 1, base_len do
-    if base_data[i] ~= my_data[i] then break end
+    if base_data[i] ~= my_data[i] then
+      break
+    end
     cur = i
   end
   local data = ""
-  for i = cur + 1, my_len do data = data .. my_data[i] .. "/" end
+  for i = cur + 1, my_len do
+    data = data .. my_data[i] .. "/"
+  end
   data = data .. M.get_base(my_path)
   return data
 end
@@ -84,16 +94,24 @@ M.log = M._log.info
 M.trace = M._log.trace
 M.error = M._log.error
 
-function M.fmt(...) M._log.fmt_info(...) end
+function M.fmt(...)
+  M._log.fmt_info(...)
+end
 
 function M.split(inputstr, sep)
-  if sep == nil then sep = "%s" end
+  if sep == nil then
+    sep = "%s"
+  end
   local t = {}
-  for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do table.insert(t, str) end
+  for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+    table.insert(t, str)
+  end
   return t
 end
 
-function M.trim_space(s) return s:match("^%s*(.-)%s*$") end
+function M.trim_space(s)
+  return s:match("^%s*(.-)%s*$")
+end
 
 function M.quickfix_extract(line)
   -- check if it is a line of file pos been selected
@@ -131,7 +149,9 @@ function M.getArgs(inputstr)
   return cmd, t
 end
 
-function M.p(t) print(vim.inspect(t)) end
+function M.p(t)
+  print(vim.inspect(t))
+end
 
 function M.printError(msg)
   vim.cmd("echohl ErrorMsg")
@@ -149,14 +169,18 @@ function M.open_log()
   vim.cmd("edit " .. path)
 end
 
-function table.pack(...) return {n = select("#", ...), ...} end
+function table.pack(...)
+  return {n = select("#", ...), ...}
+end
 
 function M.show(...)
   local string = ""
 
   local args = table.pack(...)
 
-  for i = 1, args.n do string = string .. tostring(args[i]) .. "\t" end
+  for i = 1, args.n do
+    string = string .. tostring(args[i]) .. "\t"
+  end
 
   return string .. "\n"
 end
@@ -166,12 +190,16 @@ function M.split2(s, sep)
 
   sep = sep or " "
   local pattern = string.format("([^%s]+)", sep)
-  string.gsub(s, pattern, function(c) fields[#fields + 1] = c end)
+  string.gsub(s, pattern, function(c)
+    fields[#fields + 1] = c
+  end)
 
   return fields
 end
 
-M.open_file = function(filename) vim.api.nvim_command(string.format("e! %s", filename)) end
+M.open_file = function(filename)
+  vim.api.nvim_command(string.format("e! %s", filename))
+end
 
 M.open_file_at = function(filename, line, col)
   vim.api.nvim_command(string.format("e! +%s %s", line, filename))
@@ -179,13 +207,27 @@ M.open_file_at = function(filename, line, col)
   vim.api.nvim_command(string.format("normal! %dl", col - 1))
 end
 
-function M.exists(var) for k, _ in pairs(_G) do if k == var then return true end end end
+function M.exists(var)
+  for k, _ in pairs(_G) do
+    if k == var then
+      return true
+    end
+  end
+end
 
-function M.partial(func, arg) return (function(...) return func(arg, ...) end) end
+function M.partial(func, arg)
+  return (function(...)
+    return func(arg, ...)
+  end)
+end
 
 local exclude_ft = {"scrollbar", "help", "NvimTree"}
 function M.exclude(fname)
-  for i = 1, #exclude_ft do if string.find(fname, exclude_ft[i]) then return true end end
+  for i = 1, #exclude_ft do
+    if string.find(fname, exclude_ft[i]) then
+      return true
+    end
+  end
   return false
 end
 
@@ -197,7 +239,9 @@ local api = vim.api
 local bufs
 
 function M.set_virt_eol(bufnr, lnum, chunks, priority, id)
-  if nss == nil then nss = api.nvim_create_namespace("navigator_search") end
+  if nss == nil then
+    nss = api.nvim_create_namespace("navigator_search")
+  end
   bufnr = bufnr == 0 and api.nvim_get_current_buf() or bufnr
   bufs[bufnr] = true
   -- id may be nil
@@ -206,7 +250,9 @@ function M.set_virt_eol(bufnr, lnum, chunks, priority, id)
 end
 
 function M.clear_buf(bufnr)
-  if not bufnr then return end
+  if not bufnr then
+    return
+  end
   bufnr = bufnr == 0 and api.nvim_get_current_buf() or bufnr
   if bufs[bufnr] then
     if api.nvim_buf_is_valid(bufnr) then
@@ -218,7 +264,9 @@ function M.clear_buf(bufnr)
 end
 
 function M.clear_all_buf()
-  for bufnr in pairs(bufs) do M.clear_buf(bufnr) end
+  for bufnr in pairs(bufs) do
+    M.clear_buf(bufnr)
+  end
   bufs = {}
 end
 
