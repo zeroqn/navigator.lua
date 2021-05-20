@@ -219,7 +219,7 @@ Fill struct with gopls
 
 ### Code preview with highlight
 
-![code preview](https://github.com/ray-x/files/blob/master/img/navigator/preview_with_hl.jpg?raw=true)
+![treesitter_preview](https://user-images.githubusercontent.com/1681295/118900852-4bccbe00-b955-11eb-82f6-0747b1b64e7c.jpg)
 
 ### Treesitter symbol
 
