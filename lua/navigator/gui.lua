@@ -95,7 +95,7 @@ function M.preview_uri(opts) -- uri, width, line, col, offset_x, offset_y
   loc.range["end"] = {line = opts.lnum + opts.preview_height}
   opts.location = loc
 
-  log("uri", opts.uri, opts.lnum, opts.location.range.start.line, opts.location.range['end'].line)
+  trace("uri", opts.uri, opts.lnum, opts.location.range.start.line, opts.location.range['end'].line)
   return M._preview_location(opts)
 end
 
@@ -119,7 +119,7 @@ function M.new_list_view(opts)
   if opts.rawdata then
     data = items
   else
-    data = require"guihua.util".prepare_for_render(items, opts)
+    data = require"navigator.render".prepare_for_render(items, opts)
   end
 
   local border = _NgConfigValues.border or 'shadow'

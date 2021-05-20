@@ -327,7 +327,7 @@ function M.buf_func(bufnr)
     end)
   end
 
-  return all_nodes
+  return all_nodes, width
 
 end
 

@@ -16,7 +16,7 @@ local function ref_hdlr(err, api, locations, num, bufnr)
   local opts = {}
   -- log("arg1", arg1)
   -- log(api)
-  -- log(locations)
+  trace(locations)
   -- log("num", num)
   -- log("bfnr", bufnr)
   if err ~= nil then
@@ -24,7 +24,6 @@ local function ref_hdlr(err, api, locations, num, bufnr)
     return
   end
   if type(locations) ~= 'table' then
-    log("arg1", arg1)
     log(api)
     log(locations)
     log("num", num)
@@ -36,9 +35,7 @@ local function ref_hdlr(err, api, locations, num, bufnr)
     return
   end
   local items, width = locations_to_items(locations)
-  if width < 50 then
-    width = 50
-  end
+
   local ft = vim.api.nvim_buf_get_option(bufnr, "ft")
 
   local wwidth = vim.api.nvim_get_option("columns")

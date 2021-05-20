@@ -109,14 +109,10 @@ function M.split(inputstr, sep)
   return t
 end
 
-function M.trim_space(s)
-  return s:match("^%s*(.-)%s*$")
-end
-
 function M.quickfix_extract(line)
   -- check if it is a line of file pos been selected
   local split = M.split
-  line = M.trim_space(line)
+  line = vim.trim(line)
   local sep = split(line, " ")
   if #sep < 2 then
     M.log(line)
@@ -195,6 +191,25 @@ function M.split2(s, sep)
   end)
 
   return fields
+end
+
+function M.trim_and_pad(txt)
+  local len = #txt
+  if len <= 1 then
+    return
+  end
+  local tab_en = txt[1] == '\t' or false
+  txt = vim.trim(txt)
+  if tab_en then
+    if len - txt > 2 then
+      return '    ' .. txt
+    end
+    if len - txt > 0 then
+      return '  ' .. txt
+    end
+  end
+  local rep = math.min(12, len - #txt)
+  return string.rep('  ', rep / 4) .. txt
 end
 
 M.open_file = function(filename)

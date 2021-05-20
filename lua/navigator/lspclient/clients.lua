@@ -290,7 +290,7 @@ end
 local function setup(user_opts)
 
   log(user_opts)
-  log(debug.traceback())
+  trace(debug.traceback())
   user_opts = user_opts or _NgConfigValues -- incase setup was triggered from autocmd
 
   if _Loading == true then
