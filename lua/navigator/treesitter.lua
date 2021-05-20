@@ -299,30 +299,32 @@ function M.buf_func(bufnr)
     ["class"] = true,
     ["type"] = true
   }, true)
-  if #all_nodes > 1 then
-    if all_nodes[0].node_scope then
-      table.sort(all_nodes, function(i, j)
-        if i.node_scope and j.node_scope then
-          if i.node_scope['end'].line == j.node_scope['end'].line then
-            return i.node_scope.start.line > j.node_scope.start.line
-          else
-            return i.node_scope['end'].line < j.node_scope['end'].line
-          end
+  if #all_nodes <= 1 then
+    return
+  end
+
+  if all_nodes[1].node_scope then
+    table.sort(all_nodes, function(i, j)
+      if i.node_scope and j.node_scope then
+        if i.node_scope['end'].line == j.node_scope['end'].line then
+          return i.node_scope.start.line > j.node_scope.start.line
+        else
+          return i.node_scope['end'].line < j.node_scope['end'].line
         end
-        return false
-      end)
-    else
-      table.sort(all_nodes, function(i, j)
-        if i.range and j.range then
-          if i.range['end'].line == j.range['end'].line then
-            return i.range.start.line > j.range.start.line
-          else
-            return i.range['end'].line < j.range['end'].line
-          end
+      end
+      return false
+    end)
+  else
+    table.sort(all_nodes, function(i, j)
+      if i.range and j.range then
+        if i.range['end'].line == j.range['end'].line then
+          return i.range.start.line > j.range.start.line
+        else
+          return i.range['end'].line < j.range['end'].line
         end
-        return false
-      end)
-    end
+      end
+      return false
+    end)
   end
 
   return all_nodes
