@@ -335,9 +335,9 @@ local function setup(user_opts)
 
   _Loading = false
 
-  if not _NgConfigValues.loaded then
-    vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]]) -- BufWinEnter BufNewFile,BufRead ?
-    _NgConfigValues.loaded = true
-  end
+  -- if not _NgConfigValues.loaded then
+  --   vim.cmd([[autocmd FileType * lua require'navigator.lspclient.clients'.setup()]]) -- BufWinEnter BufNewFile,BufRead ?
+  --   _NgConfigValues.loaded = true
+  -- end
 end
 return {setup = setup, cap = cap}

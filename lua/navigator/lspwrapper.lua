@@ -141,11 +141,13 @@ local function ts_functions(uri)
   local ts_func = require"navigator.treesitter".buf_func
   local bufnr = vim.uri_to_bufnr(uri)
   local x = os.clock()
+  trace(ts_nodes)
   if ts_nodes[uri] ~= nil then
     local t = ts_nodes_time[uri]
     local fname = vim.uri_to_fname(uri)
     local modified = vim.fn.getftime(fname)
-    if modified < t then
+    if modified <= t then
+      log(t, modified)
       return ts_nodes[uri]
     end
   end
@@ -164,7 +166,7 @@ local function ts_functions(uri)
   end
   ts_nodes[uri] = funcs
   ts_nodes_time[uri] = os.time()
-  trace(funcs)
+  trace(funcs, ts_nodes)
   log(string.format("elapsed time: %.4f\n", os.clock() - x))
   return funcs
 end

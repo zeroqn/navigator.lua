@@ -26,7 +26,7 @@ local function get_pads(win_width, text, postfix)
   local i = math.floor((sz + 10) / 10)
   i = i * 10 - #text
   space = string.rep(' ', i)
-  log(text, i, postfix, win_width)
+  trace(text, i, postfix, win_width)
   return space
 end
 
@@ -92,15 +92,15 @@ function M.prepare_for_render(items, opts)
     end
     item = clone(items[i])
     item.text = require'navigator.util'.trim_and_pad(item.text)
-    log(item.text)
     item.text = string.format("%4i: %s", item.lnum, item.text)
     local call_by = ""
-    if item.call_by ~= nil and #item.call_by > 0 then
-      log("call_by:", #item.call_by)
-      if item.lhs then
-        call_by = '📝 '
-      end
+    if item.lhs then
+      call_by = '📝 '
+    end
 
+    item.text = item.text:gsub('%s*[%[%(%{]*%s*$', '')
+    if item.call_by ~= nil and #item.call_by > 0 then
+      trace("call_by:", #item.call_by)
       for _, value in pairs(item.call_by) do
         if value.node_text then
           local txt = value.node_text:gsub('%s*[%[%(%{]*%s*$', '')
@@ -116,24 +116,20 @@ function M.prepare_for_render(items, opts)
           trace(item)
         end
       end
-      item.text = item.text:gsub('%s*[%[%(%{]*%s*$', '')
-
-      -- lets show call-by at 64/72/80
-
-      if call_by_presented and #call_by > 1 then
-        space = get_pads(win_width, item.text, call_by)
-        if #space + #item.text + #call_by >= win_width then
-          if #item.text + #call_by > win_width then
-            log("exceeding", #item.text, #call_by, win_width)
-            space = '   '
-          else
-            local remain = win_width - #item.text - #call_by
-            log("remain", remain)
-            space = string.rep(' ', remain)
-          end
+    end
+    if #call_by > 1 then
+      space = get_pads(win_width, item.text, call_by)
+      if #space + #item.text + #call_by >= win_width then
+        if #item.text + #call_by > win_width then
+          log("exceeding", #item.text, #call_by, win_width)
+          space = '   '
+        else
+          local remain = win_width - #item.text - #call_by
+          log("remain", remain)
+          space = string.rep(' ', remain)
         end
-        item.text = item.text .. space .. call_by
       end
+      item.text = item.text .. space .. call_by
     end
     local tail = display_items[#display_items].text
     if tail ~= item.text then -- deduplicate

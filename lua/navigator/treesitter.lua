@@ -220,6 +220,7 @@ local function get_all_nodes(bufnr, filter, summary)
       item.type = node.type
 
       if filter ~= nil and not filter[item.type] then
+        trace(item.type, item.kind)
         goto continue
       end
       local tsdata = node.def
@@ -230,16 +231,24 @@ local function get_all_nodes(bufnr, filter, summary)
       item.node_text = ts_utils.get_node_text(tsdata, bufnr)[1]
       local scope, is_func
 
-      log(item.type, tsdata:type(), item.node_text)
       if summary then
         scope, is_func = get_scope(item.type, tsdata)
       else
         scope, is_func = get_smallest_context(tsdata)
       end
+      if is_func then
+        -- hack for lua and maybe other language aswell
+        local parent = tsdata:parent()
+        if parent ~= nil and parent:type() == 'function_name' or parent:type() ==
+            'function_name_field' then
+          item.node_text = ts_utils.get_node_text(parent, bufnr)[1]
+          log(parent:type(), item.node_text)
+        end
+      end
 
       if scope ~= nil then
         -- it is strange..
-        trace(item.node_text, item.kind, item.type)
+        log(item.node_text, item.kind, item.type)
         if not is_func and summary then
           goto continue
         end
@@ -249,7 +258,8 @@ local function get_all_nodes(bufnr, filter, summary)
         if item.node_scope ~= nil then
           table.insert(all_nodes, item)
         end
-        log(item.kind, item.node_text, item.node_scope)
+
+        log(item.type, tsdata:type(), item.node_text, item.kind, item.node_text, item.node_scope)
         goto continue
       end
 
@@ -299,7 +309,8 @@ function M.buf_func(bufnr)
     ["class"] = true,
     ["type"] = true
   }, true)
-  if #all_nodes <= 1 then
+  if #all_nodes < 1 then
+    log("no node found for ", bufnr)
     return
   end
 
