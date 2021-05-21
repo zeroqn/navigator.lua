@@ -147,7 +147,7 @@ local function ts_functions(uri)
     local fname = vim.uri_to_fname(uri)
     local modified = vim.fn.getftime(fname)
     if modified <= t then
-      log(t, modified)
+      trace(t, modified)
       return ts_nodes[uri]
     end
   end
@@ -222,8 +222,7 @@ function M.locations_to_items(locations)
     item.symbol_name = get_symbol(item.text, item.range)
     item.lhs = check_lhs(item.text, item.symbol_name)
   end
-
-  return items, math.min(width + 20, 60) -- TODO I do not believe size under 60 can give correct layout
+  return items, width + 24 -- TODO handle long line?
 end
 
 function M.symbol_to_items(locations)

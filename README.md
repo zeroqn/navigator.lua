@@ -9,12 +9,11 @@ Here is an example
 
 Show javascript call tree 🌲 of a variable inside a closure. Similar to incoming&outgoing calls from LSP. This feature
 is designed for the symbol analysis.
-
-![js_closure_call_tree](https://user-images.githubusercontent.com/1681295/118975320-3e482000-b9b7-11eb-8ee0-6d5efd11652c.jpg)
+![js_closure_call_tree](https://user-images.githubusercontent.com/1681295/119120589-cee23700-ba6f-11eb-95c5-b9ac8d445c31.jpg)
 
 Explains:
-- There are 3 references for the symbol `browser` in closure.js
-- The first reference of browser is an assigement, it got an emoji to indicate the value changed in this line. In many
+- There are 3 references for the symbol <span style="color:red"> *browser* </span> in closure.js
+- The first reference of browser is an assigement, an emoji of 📝 indicates the value changed in this line. In many
 cases, we search for reference to find out where the value changed.
 - The second reference of `browser` is inside function `displayName` and `displayName` sit inside `makeFunc`, So you
 will see ` displayName{} <-  makeFunc{}`
@@ -23,7 +22,7 @@ and emoji is not shown.
 
 Struct type references in multiple Go ﳑ files
 
-![lsp_reference_search](https://user-images.githubusercontent.com/1681295/118833309-b1dd2500-b904-11eb-8a39-a5cbdfd397b3.gif)
+![go_reference](https://user-images.githubusercontent.com/1681295/119123823-54b3b180-ba73-11eb-8790-097601e10f6a.gif)
 
 This feature can provide you info in which function/class/method the variable was referenced. It is handy for large
 project where class/function defination is too long to fit into preview window. Also provides a birdview of where the

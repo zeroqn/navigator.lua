@@ -55,7 +55,7 @@ M.setup = function(cfg)
   -- local log = require"navigator.util".log
   -- log(debug.traceback())
   -- log(cfg, _NgConfigValues)
-  print("loading navigator")
+  -- print("loading navigator")
   require('navigator.lspclient.clients').setup(_NgConfigValues)
   require("navigator.lspclient.mapping").setup(_NgConfigValues)
   require("navigator.reference")

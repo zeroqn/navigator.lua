@@ -84,10 +84,10 @@ local function get_scope(type, source)
   local result = current
   local next = ts_utils.get_next_node(source)
   local parent = current:parent()
-  log(source:type(), source:range(), parent)
+  trace(source:type(), source:range(), parent)
 
   if type == 'method' or type == 'function' and parent ~= nil then
-    log(parent:type(), parent:range())
+    trace(parent:type(), parent:range())
     -- a function name
     if parent:type() == 'function_name' then
       -- up one level
@@ -100,14 +100,28 @@ local function get_scope(type, source)
   end
 
   if type == "var" and next ~= nil then
-    if next:type() == "function" or next:type() == "arrow_function" then
-      log(current:type(), current:range())
+    if next:type() == "function" or next:type() == "arrow_function" or next:type() ==
+        "function_definition" then
+      trace(current:type(), current:range())
       return next, true
     elseif parent:type() == 'function_declaration' then
       return parent, true
     else
-      log(source, source:type())
+      trace(source, source:type())
       return source, false
+    end
+  else -- M.fun1 = function() end
+    -- lets work up and see next node
+    local n = source
+    for i = 1, 4, 1 do
+      if n == nil or n:parent() == nil then
+        break
+      end
+      n = n:parent()
+      next = ts_utils.get_next_node(n)
+      if next ~= nil and next:type() == 'function_definition' then
+        return next, true
+      end
     end
   end
 
@@ -126,7 +140,6 @@ local function get_smallest_context(source)
   while current ~= nil and not vim.tbl_contains(scopes, current) do
     current = current:parent()
   end
-  log(current)
   if current ~= nil then
     return current, true
   end
@@ -246,9 +259,9 @@ local function get_all_nodes(bufnr, filter, summary)
         end
       end
 
+      log(item.node_text, item.kind, item.type)
       if scope ~= nil then
         -- it is strange..
-        log(item.node_text, item.kind, item.type)
         if not is_func and summary then
           goto continue
         end

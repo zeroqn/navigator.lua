@@ -63,6 +63,7 @@ function M.prepare_for_render(items, opts)
   for i = 1, #items do
     local space = ''
     local lspapi_display = lspapi
+    items[i].symbol_name = items[i].symbol_name or "" -- some LSP API does not have range for this
     if last_summary_idx == 1 then
       lspapi_display = items[i].symbol_name .. ' ' .. lspapi_display
       trace(items[1], lspapi_display)
@@ -90,6 +91,7 @@ function M.prepare_for_render(items, opts)
       total_ref_in_file = 1
       last_summary_idx = #display_items
     end
+    -- content of code lines
     item = clone(items[i])
     item.text = require'navigator.util'.trim_and_pad(item.text)
     item.text = string.format("%4i: %s", item.lnum, item.text)
