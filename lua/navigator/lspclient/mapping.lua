@@ -54,6 +54,14 @@ local ccls_mappings = {
   {key = "<Leader>go", func = "require('navigator.cclshierarchy').outgoing_calls()"}
 }
 
+_G.navigator_format_on_save = function()
+    if not _NgConfigValues.lsp.format_on_save then
+        return
+    end
+
+    vim.lsp.buf.formatting()
+end
+
 local function set_mapping(user_opts)
   local opts = {noremap = true, silent = true}
   user_opts = user_opts or {}
@@ -134,7 +142,7 @@ local function set_mapping(user_opts)
     vim.cmd([[
       aug NavigatorAuFormat
         au!
-        autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()
+        autocmd BufWritePre <buffer> call v:lua.navigator_format_on_save()
       aug END
      ]])
   end
@@ -182,18 +190,6 @@ M.toggle_lspformat = function(on)
   else
     _NgConfigValues.lsp.format_on_save = on
   end
-  if _NgConfigValues.lsp.format_on_save then
-    if on == nil then
-      print("format on save true")
-    end
-    vim.cmd([[set eventignore=""]])
-  else
-    if on == nil then
-      print("format on save false")
-    end
-    vim.cmd([[set eventignore=BufWritePre]])
-  end
-
 end
 
 function M.setup(user_opts)
