@@ -424,7 +424,7 @@ local function setup(user_opts)
     end
   end
 
-  wait_lsp_startup(ft, retry, lsp_opts)
+  -- wait_lsp_startup(ft, retry, lsp_opts)
 
   _LoadedClients[ft] = true
   _Loading = false
